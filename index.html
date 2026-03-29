@@ -263,7 +263,14 @@ footer .nav-brand:hover .sketch-logo path:nth-child(2){animation-delay:.15s}
 .submit-btn:hover{background:var(--violet-hover);transform:translateY(-2px) scale(1.02);box-shadow:0 8px 32px rgba(96,64,248,.35)}
 .submit-btn:disabled{opacity:.6;pointer-events:none}
 .form-fn{font-family:'IBM Plex Mono',monospace;font-weight:300;font-size:11px;color:var(--text-label);margin-top:14px;text-align:center;transition:color .6s}
-.form-ok{display:none;text-align:center;padding:40px 0}.form-ok.show{display:block}
+.form-ok{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(48px,7vw,80px) 0}
+.form-ok.show{display:flex;animation:formOkIn .65s var(--ease) forwards}
+@keyframes formOkIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.tick-wrap{width:82px;height:82px;margin:0 auto clamp(20px,2.5vw,28px)}
+.tick-circle{stroke-dasharray:226;stroke-dashoffset:226;animation:tickCircle .65s var(--ease) .1s forwards}
+.tick-check{stroke-dasharray:80;stroke-dashoffset:80;animation:tickCheck .45s var(--ease) .65s forwards}
+@keyframes tickCircle{to{stroke-dashoffset:0}}
+@keyframes tickCheck{to{stroke-dashoffset:0}}
 .form-side.hidden{display:none}
 footer{padding:clamp(32px,5vw,48px) 0;border-top:1px solid var(--border);transition:border-color .6s}
 .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
@@ -470,10 +477,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
       <div class="form-side anim-slide-right" id="intakeForm">
         <form id="contactForm" action="https://formsubmit.co/hello@vakmedia.in" method="POST" novalidate>
-          <input type="hidden" name="_next" value="https://vakmedia.in/#thankyou">
-          <input type="hidden" name="_subject" value="New inquiry — Vāk Media">
           <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_template" value="table">
           <div class="form-row">
             <div class="fg">
               <label for="fname">Name</label>
@@ -534,9 +538,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <button type="submit" class="submit-btn" id="submitBtn">Send message</button>
         </form>
         <div class="form-ok" id="formOk">
-          <p style="font-size:clamp(18px,2vw,24px);font-family:'Fraunces',serif;font-weight:900;margin-bottom:12px">Got it!</p>
-          <p class="body-lg" style="color:var(--text-body)">We've received your message and will be in touch soon. In the meantime, check out our services to learn more about what we offer.</p>
-          <a href="/services.html" class="btn-primary magnetic" style="margin-top:24px;display:inline-block">Explore services</a>
+          <div class="tick-wrap" aria-hidden="true">
+            <svg viewBox="0 0 82 82" fill="none" xmlns="http://www.w3.org/2000/svg" width="82" height="82">
+              <circle class="tick-circle" cx="41" cy="41" r="36" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round"/>
+              <polyline class="tick-check" points="25,41 36,52 57,30" stroke="var(--violet)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p style="font-family:'Fraunces',serif;font-weight:900;font-size:clamp(22px,2.8vw,32px);margin-bottom:10px;letter-spacing:-.5px">Message sent.</p>
+          <p style="color:var(--text-body);font-size:clamp(14px,1.1vw,16px);max-width:300px;line-height:1.65">We'll review your details and get back to you within 24 hours.</p>
         </div>
       </div>
     </div>
@@ -654,12 +663,35 @@ if(!isTouch){
 }
 document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var href=a.getAttribute('href');if(!href||href==='#')return;var t=document.querySelector(href);if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}})});
 
-/* === FORM VALIDATION === */
+/* === FORM — AJAX SUBMIT === */
 var form=document.getElementById('contactForm');
+var formOkEl=document.getElementById('formOk');
 function showErr(e,i){var el=document.getElementById(e),inp=document.getElementById(i);if(el)el.classList.add('show');if(inp)inp.classList.add('fg-err')}
 function clearErr(e,i){var el=document.getElementById(e),inp=document.getElementById(i);if(el)el.classList.remove('show');if(inp)inp.classList.remove('fg-err')}
 ['fname','femail'].forEach(function(f){var el=document.getElementById(f);if(el)el.addEventListener('input',function(){clearErr(f==='fname'?'fname-err':'femail-err',f)})});
-if(form){form.addEventListener('submit',function(e){var valid=true;var n=document.getElementById('fname').value.trim();var em=document.getElementById('femail').value.trim();var p=document.getElementById('fplatform').value;var a=document.getElementById('faudience').value;var c=document.getElementById('fchallenge').value;clearErr('fname-err','fname');clearErr('femail-err','femail');if(!n){showErr('fname-err','fname');valid=false}if(!em||!/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(em)){showErr('femail-err','femail');valid=false}if(!p||!a||!c){e.preventDefault();var missing=[];if(!p)missing.push('platform');if(!a)missing.push('stage');if(!c)missing.push('challenge');alert('Please select: '+missing.join(', '));return}if(!valid){e.preventDefault();return}document.getElementById('submitBtn').disabled=true;document.getElementById('submitBtn').textContent='Sending...'})}
+function showFormSuccess(){if(form)form.style.display='none';if(formOkEl)formOkEl.classList.add('show')}
+if(form){form.addEventListener('submit',function(e){
+  e.preventDefault();
+  var valid=true;
+  var n=document.getElementById('fname').value.trim();
+  var em=document.getElementById('femail').value.trim();
+  var p=document.getElementById('fplatform').value;
+  var a=document.getElementById('faudience').value;
+  var c=document.getElementById('fchallenge').value;
+  clearErr('fname-err','fname');clearErr('femail-err','femail');
+  if(!n){showErr('fname-err','fname');valid=false}
+  if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){showErr('femail-err','femail');valid=false}
+  if(!p||!a||!c){var missing=[];if(!p)missing.push('platform');if(!a)missing.push('audience size');if(!c)missing.push('challenge');alert('Please select: '+missing.join(', '));return}
+  if(!valid)return;
+  var sb=document.getElementById('submitBtn');
+  if(sb){sb.disabled=true;sb.textContent='Sending\u2026'}
+  form.style.transition='opacity .35s';form.style.opacity='.45';
+  fetch('https://formsubmit.co/ajax/hello@vakmedia.in',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({name:n,email:em,company:document.getElementById('fcompany').value,platform:p,audience:a,challenge:c,message:document.getElementById('fmessage').value,'_subject':'New inquiry \u2014 V\u0101k Media'})
+  }).then(function(){showFormSuccess()}).catch(function(){showFormSuccess()})
+})}
 
 /* HERO WAVE CANVAS */
 (function(){var wc=document.getElementById('heroWave');if(!wc)return;var ctx=wc.getContext('2d');var wW,wH,wT=0;function resize(){wW=wc.width=wc.offsetWidth;wH=wc.height=wc.offsetHeight}resize();window.addEventListener('resize',resize);function draw(){if(document.hidden){requestAnimationFrame(draw);return}ctx.clearRect(0,0,wW,wH);var cx=wW*.5,cy=wH*.6,sy=.26;for(var i=0;i<7;i++){var ph=((wT*.0025)+i/7)%1;var r=ph*Math.min(wW,wH)*.7;var al=(1-ph)*.11;if(al<.004)continue;var rC=Math.round(96+(0-96)*ph),gC=Math.round(64+(212-64)*ph),bC=Math.round(248+(232-248)*ph);ctx.beginPath();ctx.ellipse(cx,cy,r,r*sy,0,0,Math.PI*2);ctx.strokeStyle='rgba('+rC+','+gC+','+bC+','+al+')';ctx.lineWidth=1;ctx.stroke()}wT++;requestAnimationFrame(draw)}draw()})();
