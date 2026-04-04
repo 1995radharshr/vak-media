@@ -29,8 +29,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@300;400&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230C0C10'/%3E%3Cg transform='translate(32,32) scale(0.38) translate(-140,-90)'%3E%3Cpath d='M 8,18 L 108,18 L 78,56 L 140,162 L 8,90 Z' fill='%236040F8'/%3E%3Cpath d='M 272,18 L 172,18 L 202,56 L 140,162 L 272,90 Z' fill='%236040F8'/%3E%3C/g%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230C0C10'/%3E%3Cg transform='translate(90,90) scale(1.05) translate(-140,-90)'%3E%3Cpath d='M 8,18 L 108,18 L 78,56 L 140,162 L 8,90 Z' fill='%236040F8'/%3E%3Cpath d='M 272,18 L 172,18 L 202,56 L 140,162 L 272,90 Z' fill='%236040F8'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 180' role='img'%3E%3Cpath d='M8,18 L108,18 L78,56 L140,162 L8,90 Z' fill='%236040F8'/%3E%3Cpath d='M272,18 L172,18 L202,56 L140,162 L272,90 Z' fill='%236040F8'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 180' role='img'%3E%3Cpath d='M8,18 L108,18 L78,56 L140,162 L8,90 Z' fill='%236040F8'/%3E%3Cpath d='M272,18 L172,18 L202,56 L140,162 L272,90 Z' fill='%236040F8'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 180' role='img'%3E%3Cpath d='M8,18 L108,18 L78,56 L140,162 L8,90 Z' fill='%236040F8'/%3E%3Cpath d='M272,18 L172,18 L202,56 L140,162 L272,90 Z' fill='%236040F8'/%3E%3C/svg%3E">
   <title>Vāk Media — Content Agency for YouTube & Social Media Creators | Strategy · Production · Distribution</title>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"WebSite","name":"Vāk Media","alternateName":"Vakmedia","url":"https://vakmedia.in"}
@@ -146,10 +147,10 @@ footer .nav-brand:hover .sketch-logo path:nth-child(2){animation-delay:.15s}
 @media(max-width:768px){.hero-fragment{display:none}}
 .hero-mark{position:relative;width:clamp(48px,7vw,90px);margin:0 auto clamp(24px,3vw,36px);opacity:0;transform:scale(.8);will-change:opacity,transform;animation:hero-mark-in 1.2s var(--ease) .5s forwards}
 @keyframes hero-mark-in{0%{opacity:0;transform:scale(.8)}50%{opacity:1;transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
-/* Circular glow behind the mark — radial gradient pseudo-element */
-.hero-mark::before{content:'';position:absolute;top:50%;left:50%;width:240%;height:240%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse at center,rgba(96,64,248,.28) 0%,rgba(96,64,248,.12) 35%,rgba(96,64,248,.04) 60%,transparent 75%);pointer-events:none;z-index:0;animation:glowPulse 4s ease-in-out infinite;will-change:opacity}
-@keyframes glowPulse{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
-[data-theme="light"] .hero-mark::before{background:radial-gradient(ellipse at center,rgba(96,64,248,.14) 0%,rgba(96,64,248,.06) 35%,transparent 65%)}
+/* Organic glow behind the mark — circular with uneven layered opacity */
+.hero-mark::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 60px 30px rgba(96,64,248,.18),0 0 120px 60px rgba(96,64,248,.10),0 0 200px 100px rgba(96,64,248,.05),20px -10px 80px 40px rgba(0,212,232,.04),-15px 20px 90px 50px rgba(160,136,255,.05);pointer-events:none;z-index:0;animation:glowPulse 4s ease-in-out infinite;will-change:opacity}
+@keyframes glowPulse{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
+[data-theme="light"] .hero-mark::before{box-shadow:0 0 50px 25px rgba(96,64,248,.10),0 0 100px 50px rgba(96,64,248,.05),0 0 160px 80px rgba(96,64,248,.02)}
 .hero-mark svg{width:100%;height:auto;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 8px rgba(96,64,248,.3))}
 .hero-mark .sketch-logo path{stroke-width:2;stroke-dasharray:600;stroke-dashoffset:600}
 .hero-mark .sketch-logo.draw path{animation:heroSketch 2.8s cubic-bezier(.22,.61,.36,1) forwards}
@@ -211,7 +212,7 @@ footer .nav-brand:hover .sketch-logo path:nth-child(2){animation-delay:.15s}
 .particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden}
 .particle{position:absolute;width:2px;height:2px;border-radius:50%;opacity:0;will-change:transform;animation:float-up linear infinite}
 @keyframes float-up{0%{opacity:0;transform:translateY(100vh) scale(0)}10%{opacity:.5}85%{opacity:.4}100%{opacity:0;transform:translateY(-10vh) scale(1)}}
-@media(max-width:768px){.particles{display:none}}
+@media(max-width:768px){.particles{opacity:.7}}
 .parallax-bg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
 .parallax-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.06;will-change:transform}
 [data-theme="light"] .parallax-orb{opacity:.08}
@@ -304,7 +305,7 @@ footer{padding:clamp(32px,5vw,48px) 0;border-top:1px solid var(--border);transit
   .menu-overlay.show{opacity:1;visibility:visible}
 }
 @media(max-width:1280px){.bp-grid{-webkit-mask-image:none;mask-image:none}.bp-grid-wash{-webkit-mask-image:none;mask-image:none}}
-@media(max-width:768px){.hero-orb-1,.hero-orb-2{opacity:.14!important}.parallax-orb{opacity:.12!important}.noise{opacity:calc(var(--noise-opacity)*2.5)}}
+@media(max-width:768px){.bp-grid{background:repeating-linear-gradient(0deg,transparent,transparent 59px,var(--grid-line-strong) 59px,var(--grid-line-strong) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,var(--grid-line-strong) 59px,var(--grid-line-strong) 60px)}.hero-orb-1,.hero-orb-2{opacity:.14!important}.parallax-orb{opacity:.12!important}.noise{opacity:calc(var(--noise-opacity)*2.5)}}
 .cursor-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;color:var(--violet);opacity:0;transition:opacity .25s var(--ease);pointer-events:none;white-space:nowrap;z-index:1}
 .cursor-ring.has-label{width:76px;height:76px;top:-38px;left:-38px;border-color:var(--violet);background:rgba(96,64,248,.05)}
 .cursor-ring.has-label .cursor-label{opacity:1}
@@ -646,7 +647,7 @@ window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(f
 
 /* === PARTICLES === */
 var particleCount=0,maxParticles=20,particleInterval=null;
-function startParticles(){if(particleInterval||isTouch||window.innerWidth<=768)return;var pc=document.getElementById('particles');particleInterval=setInterval(function(){if(particleCount>=maxParticles)return;var p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';var dur=Math.random()*10+8;p.style.animationDuration=dur+'s';var sz=Math.random()*2+1;p.style.width=sz+'px';p.style.height=sz+'px';p.style.background=Math.random()>.5?'var(--violet)':'var(--cyan)';pc.appendChild(p);particleCount++;setTimeout(function(){p.remove();particleCount--},dur*1000)},1200)}
+function startParticles(){if(particleInterval)return;var isMobile=window.innerWidth<=768;var mobileMax=10;var pc=document.getElementById('particles');particleInterval=setInterval(function(){var limit=isMobile?mobileMax:maxParticles;if(particleCount>=limit)return;var p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';var dur=Math.random()*10+8;p.style.animationDuration=dur+'s';var sz=isMobile?(Math.random()*2+2):(Math.random()*2+1);p.style.width=sz+'px';p.style.height=sz+'px';p.style.background=Math.random()>.5?'var(--violet)':'var(--cyan)';pc.appendChild(p);particleCount++;setTimeout(function(){p.remove();particleCount--},dur*1000)},isMobile?2000:1200)}
 function stopParticles(){if(particleInterval){clearInterval(particleInterval);particleInterval=null}}
 startParticles();
 document.addEventListener('visibilitychange',function(){document.hidden?stopParticles():startParticles()});
@@ -700,7 +701,7 @@ if(form){form.addEventListener('submit',function(e){
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify({name:n,email:em,company:document.getElementById('fcompany').value,platform:p,audience:a,challenge:c,message:document.getElementById('fmessage').value,'_subject':'New inquiry \u2014 V\u0101k Media'})
-  }).then(function(){showFormSuccess()}).catch(function(){showFormSuccess()})
+  }).then(function(){showFormSuccess()}).catch(function(){if(sb){sb.disabled=false;sb.textContent='Error \u2014 try again';sb.style.background='#e53e3e'}form.style.opacity='1';setTimeout(function(){if(sb){sb.style.background='';sb.textContent='Send Message'}},4000)})
 })}
 
 /* HERO WAVE CANVAS */

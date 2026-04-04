@@ -13,7 +13,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vakmedia.in/join">
 <meta property="og:site_name" content="Vāk Media">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230C0C10'/%3E%3Cg transform='translate(32,32) scale(0.38) translate(-140,-90)'%3E%3Cpath d='M 8,18 L 108,18 L 78,56 L 140,162 L 8,90 Z' fill='%236040F8'/%3E%3Cpath d='M 272,18 L 172,18 L 202,56 L 140,162 L 272,90 Z' fill='%236040F8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 180' role='img'%3E%3Cpath d='M8,18 L108,18 L78,56 L140,162 L8,90 Z' fill='%236040F8'/%3E%3Cpath d='M272,18 L172,18 L202,56 L140,162 L272,90 Z' fill='%236040F8'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 180' role='img'%3E%3Cpath d='M8,18 L108,18 L78,56 L140,162 L8,90 Z' fill='%236040F8'/%3E%3Cpath d='M272,18 L172,18 L202,56 L140,162 L272,90 Z' fill='%236040F8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -395,7 +396,7 @@ footer .nav-brand:hover .sketch-logo path:nth-child(2){animation-delay:.15s}
       <div class="value-card stagger-child" data-stagger="2"><p class="value-num">03</p><h4>Fast growth</h4><p>We're early-stage. Your work shapes the agency as much as the content.</p></div>
       <div class="value-card stagger-child" data-stagger="3"><p class="value-num">04</p><h4>Flexible setup</h4><p>Remote-first. Results over hours. Build your best schedule.</p></div>
       <div class="value-card stagger-child" data-stagger="4"><p class="value-num">05</p><h4>Mentorship</h4><p>Strategy, distribution, analytics — learn every layer of creator growth.</p></div>
-      <div class="value-card stagger-child" data-stagger="5"><p class="value-num">06</p><h4>Fair pay</h4><p>Competitive rates, clear deliverables, no scope creep. Paid on time, every time.</p></div>
+      <div class="value-card stagger-child" data-stagger="5"><p class="value-num">06</p><h4>Founding stake</h4><p>No salary — you earn ownership. Early joiners get a real stake in the agency as it grows.</p></div>
     </div>
   </div>
 </section>
@@ -416,12 +417,7 @@ footer .nav-brand:hover .sketch-logo path:nth-child(2){animation-delay:.15s}
 
     <div style="max-width:800px;margin-top:clamp(40px,5vw,64px)">
       <div class="form-wrap anim-blur-up" id="formWrap">
-        <form id="joinForm" action="https://formsubmit.co/hello@vakmedia.in" method="POST" onsubmit="return handleSubmit(event)">
-          <input type="hidden" name="_subject" value="New Job Application — Vāk Media">
-          <input type="hidden" name="_captcha" value="true">
-          <input type="hidden" name="_template" value="table">
-          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
-          <input type="hidden" name="_next" id="formRedirect">
+        <form id="joinForm" action="/api/submit-application.php" method="POST" onsubmit="return handleSubmit(event)">
 
           <!-- Role -->
           <div class="fg">
@@ -643,13 +639,11 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 });
 
 /* === FORM === */
-var redirect=document.getElementById('formRedirect');
-if(redirect)redirect.value=window.location.href.split('#')[0]+'?applied=1';
-
 function showErr(id){var e=document.getElementById(id);if(e)e.classList.add('show')}
 function clearErr(id){var e=document.getElementById(id);if(e)e.classList.remove('show')}
 
 window.handleSubmit=function(e){
+  e.preventDefault();
   var valid=true;
   clearErr('errRole');clearErr('errName');clearErr('errEmail');clearErr('errPortfolio');clearErr('errWhy');
 
@@ -660,40 +654,53 @@ window.handleSubmit=function(e){
   if(!document.getElementById('fportfolio').value.trim()){showErr('errPortfolio');valid=false}
   if(!document.getElementById('fwhy').value.trim()){showErr('errWhy');valid=false}
 
-  if(!valid){e.preventDefault();return false}
+  if(!valid){return false}
 
-  /* Save to localStorage for dashboard */
-  var entry={
-    ts:new Date().toISOString(),
+  var payload={
     role:document.querySelector('input[name="role"]:checked')?.value||'',
     name:document.getElementById('fname').value.trim(),
     email:document.getElementById('femail').value.trim(),
     phone:document.getElementById('fphone').value.trim(),
     location:document.getElementById('flocation').value.trim(),
-    portfolio:document.getElementById('fportfolio').value.trim(),
+    portfolio_url:document.getElementById('fportfolio').value.trim(),
     experience:document.getElementById('fexp').value,
     availability:document.getElementById('favail').value,
     tools:document.getElementById('ftools').value.trim(),
     niches:document.getElementById('fniche').value.trim(),
-    why:document.getElementById('fwhy').value.trim(),
-    other:document.getElementById('fother').value.trim(),
-    status:'New'
+    why_vak:document.getElementById('fwhy').value.trim(),
+    other_info:document.getElementById('fother').value.trim()
   };
-  try{var apps=JSON.parse(localStorage.getItem('vak_applications')||'[]');apps.push(entry);localStorage.setItem('vak_applications',JSON.stringify(apps))}catch(er){}
 
-  document.getElementById('submitBtn').disabled=true;
-  document.getElementById('submitBtn').textContent='Submitting…';
-  return true;
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.textContent='Submitting…';
+
+  fetch('/api/submit-application.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).then(function(res){
+    if(res.status===201){
+      var fw=document.getElementById('formWrap'),ok=document.getElementById('formOk');
+      if(fw){fw.classList.add('hidden');fw.style.display='none'}
+      if(ok)ok.classList.add('show');
+    }else{
+      return res.text().then(function(t){throw new Error(t||'Submission failed')});
+    }
+  }).catch(function(err){
+    btn.disabled=false;
+    btn.textContent='Submit application →';
+    var prev=document.getElementById('submitError');
+    if(prev)prev.remove();
+    var errDiv=document.createElement('p');
+    errDiv.style.cssText='color:#ff4444;margin-top:12px;font-size:14px';
+    errDiv.textContent='Something went wrong. Please try again.';
+    errDiv.id='submitError';
+    btn.parentNode.insertBefore(errDiv,btn.nextSibling);
+  });
+
+  return false;
 };
-
-/* Check return from FormSubmit */
-if(window.location.search.includes('applied=1')){
-  var fw=document.getElementById('formWrap'),ok=document.getElementById('formOk');
-  if(fw)fw.classList.add('hidden');if(fw)fw.style.display='none';
-  if(ok)ok.classList.add('show');
-  history.replaceState(null,'',window.location.pathname);
-}
-
 })();
 </script>
 </body>
