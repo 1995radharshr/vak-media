@@ -27,7 +27,7 @@ $sort = in_array($_GET['sort'] ?? '', $allowedSort) ? $_GET['sort'] : 'submitted
 $dir = (strtolower($_GET['dir'] ?? '') === 'asc') ? 'ASC' : 'DESC';
 
 $sql = "SELECT id, name, email, phone, location, role, experience, availability,
-               portfolio, tools, niches, why_vak, other_info, status,
+               portfolio, tools, niches, why_vak, other_info, remarks, status,
                submitted_at, updated_at
         FROM applications $where ORDER BY $sort $dir";
 

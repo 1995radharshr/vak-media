@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS applications (
     niches       TEXT,
     why_vak      TEXT,
     other_info   TEXT,
+    remarks      TEXT,
     status       ENUM('new','reviewed','shortlisted','rejected') DEFAULT 'new',
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -193,6 +193,13 @@ tr:hover td{background:rgba(96,64,248,.04)}
 .btn-active.btn-reviewed{background:rgba(248,176,64,.1)}
 .btn-active.btn-shortlisted{background:rgba(0,232,162,.1)}
 .btn-active.btn-rejected{background:rgba(232,80,80,.1)}
+.drawer-remarks{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--text-primary);line-height:1.6;width:100%;resize:vertical;outline:none;transition:border-color .3s,box-shadow .3s;min-height:60px;margin-bottom:10px}
+.drawer-remarks:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(96,64,248,.12)}
+.drawer-remarks::placeholder{color:var(--text-muted);font-style:italic}
+.drawer-save-remarks{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:var(--violet);color:#fff;border:none;border-radius:100px;padding:7px 18px;cursor:pointer;transition:background .3s,transform .2s}
+.drawer-save-remarks:hover{background:var(--violet-hover);transform:translateY(-1px)}
+.remarks-saved{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--green);margin-left:10px;opacity:0;transition:opacity .3s}
+.remarks-saved.show{opacity:1}
 .drawer-del{width:100%;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(232,80,80,.08);border:1px solid rgba(232,80,80,.2);border-radius:10px;padding:11px;color:var(--red);cursor:pointer;transition:background .3s,border-color .3s;margin-top:16px}
 .drawer-del:hover{background:rgba(232,80,80,.15);border-color:rgba(232,80,80,.35)}
 
@@ -328,10 +335,10 @@ tr:hover td{background:rgba(96,64,248,.04)}
           </select>
           <select class="filter-select" id="statusFilter" onchange="filterTable()">
             <option value="">All statuses</option>
-            <option>New</option>
-            <option>Reviewed</option>
-            <option>Shortlisted</option>
-            <option>Rejected</option>
+            <option value="new">New</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="rejected">Rejected</option>
           </select>
           <button class="tool-btn" onclick="clearAll()">Clear all data</button>
         </div>
@@ -405,10 +412,10 @@ tr:hover td{background:rgba(96,64,248,.04)}
   <div class="drawer-body">
     <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-label);margin-bottom:10px">Update status</p>
     <div class="drawer-status-row" id="statusBtns">
-      <button class="drawer-status-btn btn-new" onclick="setStatus('New')">New</button>
-      <button class="drawer-status-btn btn-reviewed" onclick="setStatus('Reviewed')">Reviewed</button>
-      <button class="drawer-status-btn btn-shortlisted" onclick="setStatus('Shortlisted')">Shortlisted</button>
-      <button class="drawer-status-btn btn-rejected" onclick="setStatus('Rejected')">Rejected</button>
+      <button class="drawer-status-btn btn-new" onclick="setStatus('new')">New</button>
+      <button class="drawer-status-btn btn-reviewed" onclick="setStatus('reviewed')">Reviewed</button>
+      <button class="drawer-status-btn btn-shortlisted" onclick="setStatus('shortlisted')">Shortlisted</button>
+      <button class="drawer-status-btn btn-rejected" onclick="setStatus('rejected')">Rejected</button>
     </div>
     <div class="drawer-divider"></div>
     <div class="drawer-row">
@@ -430,6 +437,13 @@ tr:hover td{background:rgba(96,64,248,.04)}
     <div class="drawer-field" style="margin-bottom:16px">
       <label>Anything else</label>
       <div class="drawer-textarea" id="dOther"></div>
+    </div>
+    <div class="drawer-divider"></div>
+    <div class="drawer-field" style="margin-bottom:16px">
+      <label>Admin remarks</label>
+      <textarea id="dRemarks" class="drawer-remarks" placeholder="Add notes about this applicant..." rows="3"></textarea>
+      <button class="drawer-save-remarks" id="saveRemarksBtn" onclick="saveRemarks()">Save remarks</button>
+      <span class="remarks-saved" id="remarksSaved">Saved ✓</span>
     </div>
     <div class="drawer-divider"></div>
     <div class="drawer-field"><label>Applied</label><p id="dTs" style="font-family:'IBM Plex Mono',monospace;font-size:11px"></p></div>
@@ -566,8 +580,8 @@ function renderAll(){
 
 function updateStats(){
   document.getElementById('statTotal').textContent=apps.length;
-  document.getElementById('statNew').textContent=apps.filter(function(a){return a.status==='New'||!a.status}).length;
-  document.getElementById('statShort').textContent=apps.filter(function(a){return a.status==='Shortlisted'}).length;
+  document.getElementById('statNew').textContent=apps.filter(function(a){return a.status==='new'||!a.status}).length;
+  document.getElementById('statShort').textContent=apps.filter(function(a){return a.status==='shortlisted'}).length;
   document.getElementById('statEditor').textContent=apps.filter(function(a){return a.role&&a.role.toLowerCase().includes('editor')}).length;
   document.getElementById('sidebarCount').textContent=apps.length;
   document.getElementById('pageSubtitle').textContent=apps.length
@@ -583,7 +597,7 @@ window.filterTable=function(){
   filteredApps=apps.filter(function(a){
     var matchQ=!q||(a.name||'').toLowerCase().includes(q)||(a.email||'').toLowerCase().includes(q)||(a.role||'').toLowerCase().includes(q)||(a.location||'').toLowerCase().includes(q);
     var matchR=!rf||(a.role||'')==rf;
-    var matchS=!sf||(a.status||'New')==sf;
+    var matchS=!sf||(a.status||'new')==sf;
     return matchQ&&matchR&&matchS;
   });
   sortApps();
@@ -611,8 +625,8 @@ function renderTable(){
     return;
   }
   tb.innerHTML=filteredApps.map(function(a,i){
-    var ts=a.ts?new Date(a.ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
-    var st=a.status||'New';
+    var ts=(a.submitted_at||a.ts)?new Date(a.submitted_at||a.ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    var st=a.status||'new';
     var pillCls='pill-'+esc(st.toLowerCase());
     var realIdx=apps.indexOf(a);
     var portfolioCell=a.portfolio
@@ -647,11 +661,13 @@ window.openDrawer=function(idx){
   pl.href=a.portfolio||'#';
   document.getElementById('dTools').textContent=a.tools||'—';
   document.getElementById('dNiches').textContent=a.niches||'—';
-  document.getElementById('dWhy').textContent=a.why||'—';
-  document.getElementById('dOther').textContent=a.other||'No additional info';
-  document.getElementById('dTs').textContent=a.ts?new Date(a.ts).toLocaleString('en-IN'):'—';
+  document.getElementById('dWhy').textContent=a.why_vak||a.why||'—';
+  document.getElementById('dOther').textContent=a.other_info||a.other||'No additional info';
+  document.getElementById('dTs').textContent=(a.submitted_at||a.ts)?new Date(a.submitted_at||a.ts).toLocaleString('en-IN'):'—';
+  document.getElementById('dRemarks').value=a.remarks||'';
+  document.getElementById('remarksSaved').classList.remove('show');
   /* Status buttons */
-  var curSt=a.status||'New';
+  var curSt=a.status||'new';
   document.querySelectorAll('.drawer-status-btn').forEach(function(b){b.classList.remove('btn-active')});
   var activeBtn=document.querySelector('.btn-'+curSt.toLowerCase());
   if(activeBtn)activeBtn.classList.add('btn-active');
@@ -680,6 +696,26 @@ window.setStatus=function(st){
       renderAll();
     }
   }).catch(function(){/* handled by api() 401 check */});
+};
+
+window.saveRemarks=function(){
+  if(activeIdx===null)return;
+  var appId=apps[activeIdx].id;
+  var remarks=document.getElementById('dRemarks').value;
+  var btn=document.getElementById('saveRemarksBtn');
+  var saved=document.getElementById('remarksSaved');
+  btn.textContent='Saving...';btn.disabled=true;
+  api('/api/update-remarks.php',{
+    method:'POST',
+    body:{id:appId,remarks:remarks}
+  }).then(function(r){return r.json()}).then(function(data){
+    if(data.ok){
+      apps[activeIdx].remarks=remarks;
+      saved.classList.add('show');
+      setTimeout(function(){saved.classList.remove('show')},2500);
+    }
+    btn.textContent='Save remarks';btn.disabled=false;
+  }).catch(function(){btn.textContent='Save remarks';btn.disabled=false});
 };
 
 window.deleteEntry=function(){
